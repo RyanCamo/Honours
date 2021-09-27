@@ -8,12 +8,17 @@ sns.set()
 data = np.genfromtxt("Covariance Matrix/FITOPT000_MUOPT006.M0DIF",names=True,comments='#',dtype=None, skip_header=14, encoding=None)
 mu_error = data['MUDIFERR']
 mu_error_diag = np.diag(mu_error)
-#print(mu_error_diag)
+print(np.diag(mu_error_diag))
 
 cov_arr = np.genfromtxt("Covariance Matrix/FITOPT000_MUOPT006.COV",comments='#',dtype=None, skip_header=1)
 cov = cov_arr.reshape(20,20)
-print(np.diag(cov))
-
+print(cov_arr[0:20])
+tot = 0
+for i, m in enumerate(cov_arr[0:20]):
+    tot +=m**2
+print(np.sqrt(tot))
+print(np.sqrt(np.sum(np.abs(cov_arr[0:20]))))
+exit()
 # Plots
 fig, ([ax1,ax2],[ax3,ax4]) = plt.subplots(2,2)
 
