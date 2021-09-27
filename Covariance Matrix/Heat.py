@@ -8,7 +8,6 @@ sns.set()
 data = np.genfromtxt("FITOPT000_MUOPT006.M0DIF",names=True,comments='#',dtype=None, skip_header=14, encoding=None)
 mu_error = data['MUDIFERR']
 mu_error_diag = np.diag(mu_error)
-print(mu_error_diag)
 
 cov_arr = np.genfromtxt("FITOPT000_MUOPT006.COV",comments='#',dtype=None, skip_header=1)
 cov = cov_arr.reshape(20,20)
