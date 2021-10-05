@@ -46,6 +46,8 @@ def get_legend_label(x, params):
         return r'DGP: $\Omega_{rc} = %0.2f $, $\Omega_K = %0.2f $' % (params[0], params[1])
     if x == 'IDE':
         return r'IDE: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $Q = %0.2f $' % (params[0], params[1], params[2], params[3])
+    if x == 'Fwa1':
+        return r'F$\omega$(a)1: $\Omega_m = %0.2f $, $\omega_0 = %0.2f $, $\omega_a = %0.2f $, $M = %0.2f $' % (params[0], params[1], params[2],params[3] )
 
 # List of begining values for each model to feed to the MCMC sampler - Dont select 0 as starting position
 def get_begin_values(x):
@@ -58,7 +60,7 @@ def get_begin_values(x):
     if x == 'wCDM':
         return [0.3, 0.7, -1]
     if x == 'Fwa':
-        return [0.3, -1.1, 0.8]
+        return [0.41, -1.21, 1.08]
     if x == 'FCa':
         return [0.3, 1, 0.01]
     if x == 'Chap':
@@ -71,16 +73,21 @@ def get_begin_values(x):
         return [0.13, 0.02]
     if x == 'IDE':
         return [0.3, 0.7, -1, -0.02]
+    if x == 'Fwa1':
+        return [0.3, -1.1, 0.8, 43]
 
 
 # ---------- Import data ---------- #
 # Import data
-data = np.genfromtxt("FITOPT000_MUOPT006.M0DIF",names=True,comments='#',dtype=None, skip_header=14, encoding=None)
-zz = data['z']
-mu = data['MUDIF'] + data['MUREF']
-mu_error = data['MUDIFERR']
-#cov_arr = np.genfromtxt("FITOPT000_MUOPT006.COV",comments='#',dtype=None, skip_header=1)
-#cov = cov_arr.reshape(20,20)
+data = np.genfromtxt("HubbleDiagram/DATA_simdes5yr_binned.txt",names=True,dtype=None, encoding=None, delimiter=',')
+zz = data['zCMB']
+mu = data['MU']
+error = data['MUERR']
+cov_arr = np.genfromtxt("HubbleDiagram/COVsyst_simdes5yr_binned.txt",comments='#',dtype=None, skip_header=1)
+cov = cov_arr.reshape(20,20)
+cov2 = np.diagonal(cov) 
+mu_diag = np.diag(error)**2
+mu_error = mu_diag+cov
 
 
 
@@ -99,7 +106,7 @@ params_DGP = [zz, 0.13, 0.02]
 
 #params_all = [params_FLCDM,params_LCDM,params_FwCDM,params_wCDM,params_Fwa,params_FCa,params_Chap,params_FGChap,params_GChap,params_DGP]
 # List of models to loop through from ModelMerger file
-models = [Fwa]
+models = [Fwa1]
 #[FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
 
 # Milne Model for scaling figure
@@ -109,7 +116,7 @@ milne = LCDM(zz,[0,0])
 params_all = []
 def get_bestfit(models):     # get_labels dont have marginalised value in but MCMC uses it
     for i, model in enumerate(models):
-        nsamples = int(2e4)
+        nsamples = int(5e4)
         params_begin = np.array(get_begin_values(model.__name__))
         proposal = []
         params_begin1 = []
@@ -124,12 +131,12 @@ get_bestfit(models)
 
 # Plot each model
 for i, (params, model) in enumerate(zip(params_all, models)):
-    hubble = model(zz, params) + 43.166
+    hubble = model(zz, params) 
     labels = get_legend_label(model.__name__ , params)
-    plt.plot(zz, hubble-milne, markersize=2, label = labels)
+    plt.plot(zz, hubble-milne-(hubble[0]-milne[0]), markersize=2, label = labels)
 
 # Plot the data points
-plt.errorbar(zz,mu-milne,yerr=mu_error,fmt='.',elinewidth=0.7,markersize=4, color='k' )
+plt.errorbar(zz,mu-milne-(mu[0]-milne[0]),yerr=error,fmt='.',elinewidth=0.7,markersize=4, color='k' )
 
 
 # Figure properties
