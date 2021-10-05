@@ -5,20 +5,18 @@ from matplotlib import pyplot as plt
 sns.set()
 
 # Import data
-data = np.genfromtxt("Covariance Matrix/FITOPT000_MUOPT006.M0DIF",names=True,comments='#',dtype=None, skip_header=14, encoding=None)
-mu_error = data['MUDIFERR']
-mu_error_diag = np.diag(mu_error)
-print(np.diag(mu_error_diag))
+data = np.genfromtxt("Covariance Matrix/DATA_simdes5yr_binned.txt",names=True,dtype=None, encoding=None, delimiter=',')
+mu_error = data['MUERR']
+mu_error_diag = np.diag(mu_error)**2
 
-cov_arr = np.genfromtxt("Covariance Matrix/FITOPT000_MUOPT006.COV",comments='#',dtype=None, skip_header=1)
+
+cov_arr = np.genfromtxt("Covariance Matrix/COVsyst_simdes5yr_binned.txt",comments='#',dtype=None, skip_header=1)
 cov = cov_arr.reshape(20,20)
-print(cov_arr[0:20])
+
 tot = 0
 for i, m in enumerate(cov_arr[0:20]):
     tot +=m**2
-print(np.sqrt(tot))
-print(np.sqrt(np.sum(np.abs(cov_arr[0:20]))))
-exit()
+
 # Plots
 fig, ([ax1,ax2],[ax3,ax4]) = plt.subplots(2,2)
 
