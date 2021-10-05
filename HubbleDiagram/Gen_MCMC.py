@@ -12,15 +12,23 @@ from chainconsumer import ChainConsumer
 # To run:
 #       Initial conditions/proposal widths
 
-
+def cov_log_likelihood(model, zz, mu, cov):
+    delta = np.array([model - mu])
+    inv_cov = np.linalg.inv(cov)
+    deltaT = np.transpose(delta)
+    chit2 = np.sum(delta @ inv_cov @ deltaT)
+    B = np.sum(delta @ inv_cov)
+    C = np.sum(inv_cov)
+    chi2 = chit2 - (B**2 / C) + np.log(C / (2* np.pi))
+    return -0.5*chi2 
 
 def log_likelihood(model, zz, mu, mu_err): 
     delta = model - mu
     chit2 = np.sum(delta**2 / mu_err**2)
     B = np.sum(delta/mu_err**2)
     C = np.sum(1/mu_err**2)
-    #chi2 = chit2 - (B**2 / C) + np.log(C/(2* np.pi))
-    chi2 =  np.sum((mu - model) ** 2 /mu_err**2) 
+    chi2 = chit2 - (B**2 / C) + np.log(C/(2* np.pi))
+    #chi2 =  chit2
     # original log_likelihood ---->    -0.5 * np.sum((mu - model) ** 2 /mu_err**2) 
     return -0.5*chi2
 
@@ -44,8 +52,9 @@ def metropolis_hastings(data_x, data_y, data_err, begin, nsamples, proposal_widt
         exit()
 
     model_int = model(data_x, samples[0,0:]) 
-    log_posterior_old += log_likelihood(model_int, data_x, data_y, data_err)
-
+    log_posterior_old += cov_log_likelihood(model_int, data_x, data_y, data_err)
+    #print(log_posterior_old)
+    #exit()
 
     # Loop over the required number of iterations
     acceptance = 0   # Update this every time you accept a sample
@@ -56,21 +65,29 @@ def metropolis_hastings(data_x, data_y, data_err, begin, nsamples, proposal_widt
         modeli = model(data_x, new_params)
         
         # Compute the log-prior and log-likelihood for the new samples 
-        L_tot = log_prior(new_params, begin) + log_likelihood(modeli, data_x, data_y, data_err)
-  
+        L_tot = log_prior(new_params, begin) + cov_log_likelihood(modeli, data_x, data_y, data_err)
+
         # Compute the acceptance ratio
-        alpha = np.exp(L_tot-log_posterior_old)
-        
+        alpha = np.exp((L_tot-log_posterior_old))
+        #print('L_tot-Log_post:')
+        #print(L_tot-log_posterior_old)
+        #print('alpha:')
+        #print(alpha)
 
         # Accept or reject the proposed values and store the results in samples.
         # Update the value of "acceptance" when we accept a sample so we can see how often we do it
         u = np.random.uniform()
-        if u > alpha:
-            samples[i,0:] = samples[i-1,0:]
-        if u <= alpha:
+        if L_tot > log_posterior_old:
             samples[i,0:] = new_params
             acceptance += 1  
             log_posterior_old = L_tot
+        else:
+            if u > alpha:
+                samples[i,0:] = samples[i-1,0:]
+            if u <= alpha:
+                samples[i,0:] = new_params
+                acceptance += 1  
+                log_posterior_old = L_tot
     
         
         # Let's print how often we are accepting samples every thousand interations. 
@@ -84,12 +101,16 @@ def metropolis_hastings(data_x, data_y, data_err, begin, nsamples, proposal_widt
 
 # ---------- Import data ---------- #
 # Import data
-data = np.genfromtxt("FITOPT000_MUOPT006.M0DIF",names=True,comments='#',dtype=None, skip_header=14, encoding = None)
-zz = data['z']
-mu = data['MUDIF'] + data['MUREF']
-mu_error = data['MUDIFERR']
-cov_arr = np.genfromtxt("FITOPT000_MUOPT006.COV",comments='#',dtype=None, skip_header=1)
+data = np.genfromtxt("HubbleDiagram/DATA_simdes5yr_binned.txt",names=True,dtype=None, encoding=None, delimiter=',')
+zz = data['zCMB']
+mu = data['MU']
+error = data['MUERR']
+cov_arr = np.genfromtxt("HubbleDiagram/COVsyst_simdes5yr_binned.txt",comments='#',dtype=None, skip_header=1)
 cov = cov_arr.reshape(20,20)
+cov2 = np.diagonal(cov) 
+mu_diag = np.diag(error)**2
+mu_error = mu_diag+cov
+
 
 
 
@@ -101,7 +122,7 @@ cov = cov_arr.reshape(20,20)
 
 def get_params(samples, label):
     c = ChainConsumer()
-    burnin = 1000
+    burnin = 2000
     burntin = samples[burnin:]
     c.add_chain(burntin, parameters=label, linewidth=2.0, name="MCMC").configure(summary=True)
     params = []
