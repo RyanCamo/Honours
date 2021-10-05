@@ -122,6 +122,20 @@ def Fwa(zs, parameters):
     label = ["$\Omega_m$","$w_0$","$w_a$"]
     return dist_mod
 
+def Fwa_Hz_inverse1(z,om,w0,wa):
+    ol = 1 - om 
+    Hz = np.sqrt( (om*(1+z)**(3)) + (ol * ((1+z)**(3*(1+w0+wa))) * (np.exp(-3*wa*(1-((1+z)**(-1))))) ) )
+    return 1.0 / Hz
+
+def Fwa1(zs, parameters):
+    om, w0, wa, m = parameters
+    x = np.array([quad(Fwa_Hz_inverse1, 0, z, args=(om, w0, wa))[0] for z in zs])
+    D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist) + m
+    label = ["$\Omega_m$","$w_0$","$w_a$"]
+    return dist_mod
+
 
 # 6) Cardassian with 3x parameters, \Omega_M, q and n
 def FCa_Hz_inverse(z, om, q ,n ):
@@ -298,3 +312,5 @@ def get_label(x):
         return [r"\Omega_{rc}"]
     if x == 'IDE':
         return [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$Q$"]
+    if x == 'Fwa1':
+        return [r"$\Omega_m$",r"$w_0$",r"$w_a$",r"$M$"]
