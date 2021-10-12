@@ -34,7 +34,7 @@ def log_prior(parameters, begin):
         return 0
 
 def L_tot(params, zz, mu, mu_err, model, begin): 
-    like = cov_log_likelihood(params, zz, mu, mu_err, model)
+    like = log_likelihood(params, zz, mu, mu_err, model)
     prior = log_prior(params, begin)
     if np.isnan(like+prior) == True:
         return -np.inf
@@ -49,8 +49,8 @@ def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model):
 
 
     sampler = emcee.EnsembleSampler(nwalkers, ndim, L_tot, args=(data_x, data_y, data_err, model,begin))
-    sampler.run_mcmc(p0, 100, progress=True)
-    samples = sampler.get_chain(discard=50, thin=7,flat=True)
+    sampler.run_mcmc(p0, 50, progress=True)
+    samples = sampler.get_chain(discard=10, thin=7,flat=True)
 
     return samples
 
@@ -59,8 +59,8 @@ def get_param(samples, label, model):
     burnin = 1
     burntin = samples[burnin:]
     c.add_chain(burntin, parameters=label, linewidth=2.0, name="MCMC").configure(summary=True,smooth=1)
-    c.plotter.plot(figsize="COLUMN", chains="MCMC", filename='Model: %s' % model)
-    plt.close()
+    #c.plotter.plot(figsize="COLUMN", chains="MCMC", filename='Model: %s' % model)
+    #plt.close()
     params = []
     for i, labelx in enumerate(label):
         params.append(c.analysis.get_summary(chains="MCMC")[labelx][1])
