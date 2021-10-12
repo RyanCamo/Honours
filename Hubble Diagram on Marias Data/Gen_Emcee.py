@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from chainconsumer import ChainConsumer
 from numpy.core.numeric import NaN
 import numpy as np
-from ModelMerger import *
+from ModelMergerUpdated import *
 import emcee
 
 def log_likelihood(params, zz, mu, mu_err, model): 
@@ -49,7 +49,19 @@ def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model):
 
 
     sampler = emcee.EnsembleSampler(nwalkers, ndim, L_tot, args=(data_x, data_y, data_err, model,begin))
-    sampler.run_mcmc(p0, 400, progress=True)
+    sampler.run_mcmc(p0, 100, progress=True)
     samples = sampler.get_chain(discard=50, thin=7,flat=True)
 
     return samples
+
+def get_param(samples, label, model):
+    c = ChainConsumer()
+    burnin = 1
+    burntin = samples[burnin:]
+    c.add_chain(burntin, parameters=label, linewidth=2.0, name="MCMC").configure(summary=True,smooth=1)
+    c.plotter.plot(figsize="COLUMN", chains="MCMC", filename='Model: %s' % model)
+    plt.close()
+    params = []
+    for i, labelx in enumerate(label):
+        params.append(c.analysis.get_summary(chains="MCMC")[labelx][1])
+    return params
