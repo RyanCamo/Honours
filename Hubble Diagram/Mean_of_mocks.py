@@ -15,15 +15,15 @@ def get_bestfit(model, zz1, mu1, mu_error1):     # get_labels dont have marginal
     for i, begin_param in enumerate(params_begin):
         proposal.append(abs(begin_param)*0.06)
         params_begin1.append(begin_param)
-    samples = emcee_run(zz1, mu1, mu_error1, params_begin1, nsamples, proposal, model)
+    samples, samples1, pdf = emcee_run(zz1, mu1, mu_error1, params_begin1, nsamples, proposal, model)
     params_all.append(get_param(samples, label, model.__name__))
-    return params_all, samples
+    return params_all, samples, samples1, pdf
 
 c = ChainConsumer()
-count = 2
+count = 50
 zz = np.logspace(-2,0.2,20)
-mu_error = np.linspace(0.1,0.1,20)
-models = [wCDM]
+mu_error = np.linspace(0.01,0.01,20)
+models = [DGP]
 #[FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
 meanmock = []
 milne = LCDM(zz,[0,0])
@@ -32,8 +32,8 @@ for i, model in enumerate(models):
     label, begin, legend = get_info(model.__name__)
     for j in range(count):
         mu = np.genfromtxt('Hubble Diagram/MockData/%s/%s_%d.txt' % (model.__name__,model.__name__, j))
-        mockfit, samples = get_bestfit(model, zz, mu, mu_error)
-        #c.add_chain(samples, parameters=label, color='b', name="Simulation validation")
+        mockfit, samples, samples1, pdf = get_bestfit(model, zz, mu, mu_error)
+        c.add_chain(samples1[0], posterior=pdf, parameters=label, color='b', name="Simulation validation")
         params.append(mockfit)
         mu_mock = model(zz, *mockfit)
         plt.plot(zz, mu_mock-milne, 'b', alpha = 0.2) # Plot each mock
@@ -50,10 +50,11 @@ for i, model in enumerate(models):
     label, begin, legend = get_info(model.__name__, *mean_params) # grab the label for the mean values
     plt.plot(zz,mu_mean-milne, 'k', label = 'Mean - %s' %(legend) ) # plot the mean
     label1, begin1, legend1 = get_info(model.__name__, *begin) # grab the label for the true values
-    plt.text(0.1,-0.07,'Truth - %s' %(legend1))
-    plt.legend(loc='best')
+    plt.plot([], [], ' ', label='Truth - %s' %(legend1)) # adding the label for the truth value to the legend
+    plt.legend(loc='lower left')
     plt.savefig('%s: Mock_x%s Hubble Diagram.png' % (model.__name__, count),bbox_inches='tight')
     
     plt.close()
-    #fig = c.plotter.plot()
-    plt.show()
+    fig = c.plotter.plot()
+    plt.savefig('%s: Mock_x%s CC.png' % (model.__name__, count),bbox_inches='tight')
+    plt.close()

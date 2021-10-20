@@ -49,10 +49,11 @@ def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model):
 
 
     sampler = emcee.EnsembleSampler(nwalkers, ndim, L_tot, args=(data_x, data_y, data_err, model,begin))
-    sampler.run_mcmc(p0, 50, progress=True)
-    samples = sampler.get_chain(discard=10, thin=7,flat=True)
-
-    return samples
+    sampler.run_mcmc(p0, 200, progress=True)
+    samples = sampler.get_chain(discard=20, thin=7, flat=True)
+    samples1 = sampler.get_chain(discard=20, thin=7)
+    pdf, blob = sampler.compute_log_prob(p0)
+    return samples, samples1, pdf
 
 def get_param(samples, label, model):
     c = ChainConsumer()

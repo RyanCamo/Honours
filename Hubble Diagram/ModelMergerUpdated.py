@@ -37,7 +37,7 @@ def FLCDM(zs, parameters):
     ol = 1 - om
     x = np.array([quad(FLCDM_Hz_inverse, 0, z, args=(om, ol))[0] for z in zs])
     D = x
-    lum_dist = D * (1 + zs)
+    lum_dist = D * (1 + zs) 
     dist_mod = 5 * np.log10(lum_dist)
     label = ["$\Omega_m$"]
     return dist_mod
@@ -82,12 +82,35 @@ def FwCDM(zs, parameters):
     label = ["$\Omega_m$","$\omega$"]
     return dist_mod
 
-
 # 4) Constant wCDM with 3x parameters, \Omega_M, \Omega_{\Lambda} and \omega - DONE
+def wCDM_Hz_inverseu(u,om,ol,w):
+    omega_k = 1.0 - om - ol
+    opz = u**(2) # opz = a
+    Hz = np.sqrt((omega_k*(opz)**(-2) + om*(opz)**(-3) + ol*(opz)**(-3*(1+w))))
+    return -2.0 / (Hz*u**(3))
+    
+def wCDMu(zs, parameters):
+    om, ol, w = parameters
+    us = (1+zs)**(-1/2)
+    ok = 1.0 - om - ol
+    x = np.array([quad(wCDM_Hz_inverseu, 1, u, args=(om, ol, w))[0] for u in us])
+    if ok < 0.0:
+        R0 = 1 / np.sqrt(-ok)
+        D = R0 * np.sin(x / R0)
+    elif ok > 0.0:
+        R0 = 1 / np.sqrt(ok)
+        D = R0 * np.sinh(x / R0)
+    else:
+        D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = ["$\Omega_m$","$\Omega_{\Lambda}$",r"$\omega$"]
+    return dist_mod
+
 def wCDM_Hz_inverse(z,om,ol,w):
     omega_k = 1.0 - om - ol
     Hz = np.sqrt((omega_k*(1+z)**(2) + om*(1+z)**(3) + ol*(1+z)**(3*(1+w))))
-    return 1.0 / Hz
+    return 1.0 / (Hz)
     
 def wCDM(zs, parameters):
     om, ol, w = parameters
@@ -393,7 +416,29 @@ def get_info(x, *params):
 
 
 if __name__ == "__main__":
-    params = [0]
+    params = [1]
     label, begin, legend = get_info(FLCDM.__name__, *params)
-    print(legend)
 
+
+    # Function adapted from a previous one built (why theres some weird terms)
+
+    def DeSitter_Hz_inverse(z,om, ol):
+        Hz = np.sqrt((1 + z) ** 2 * (om * z + 1) - ol * z * (z + 2))
+        return 1.0 / Hz
+        
+    def DeSitter(z):
+        om = 1
+        ol = 0 
+        x = np.array([quad(DeSitter_Hz_inverse, 0, z, args=(om, ol))[0]])
+        D = x
+        lum_dist = D * (1 + z) 
+        print(D)
+        print(lum_dist)
+        print(lum_dist*3e5/100) # PUTS IN TERMS OF h^{-1} MPC
+        print((1+z)*(-2)*(((1+z)**(-1/2))-1))
+        dist_mod = 5 * np.log10(lum_dist)
+        label = ["$\Omega_m$"]
+        return dist_mod
+
+    DeSitter(0.5) # redshift we are interested in calculating = 0.5 for a)
+    
