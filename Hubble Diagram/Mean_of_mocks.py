@@ -19,15 +19,16 @@ def get_bestfit(model, zz1, mu1, mu_error1):     # get_labels dont have marginal
     params_all.append(get_param(samples, label, model.__name__))
     return params_all, samples, samples1, pdf
 
-c = ChainConsumer()
-count = 50
+
+count = 2
 zz = np.logspace(-2,0.2,20)
 mu_error = np.linspace(0.01,0.01,20)
-models = [DGP]
+models = [FLCDM, LCDM]
 #[FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
 meanmock = []
 milne = LCDM(zz,[0,0])
 for i, model in enumerate(models):
+    c = ChainConsumer()
     params = []
     label, begin, legend = get_info(model.__name__)
     for j in range(count):
@@ -36,7 +37,8 @@ for i, model in enumerate(models):
         c.add_chain(samples1[0], posterior=pdf, parameters=label, color='b', name="Simulation validation")
         params.append(mockfit)
         mu_mock = model(zz, *mockfit)
-        plt.plot(zz, mu_mock-milne, 'b', alpha = 0.2) # Plot each mock
+        offset = (np.sum(mu - mu_mock))/len(zz)
+        plt.plot(zz, (mu_mock-(offset))-milne, 'b', alpha = 0.2) # Plot each mock
     # Get the mean of the mock
     params_shaped = np.reshape(params, (count,len(begin)))
     mean_params = []
