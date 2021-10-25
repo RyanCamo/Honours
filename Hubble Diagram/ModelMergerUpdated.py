@@ -427,8 +427,8 @@ if __name__ == "__main__":
         return 1.0 / Hz
         
     def DeSitter(z):
-        om = 1
-        ol = 0 
+        om = 0.3
+        ol = 0.7
         x = np.array([quad(DeSitter_Hz_inverse, 0, z, args=(om, ol))[0]])
         D = x
         lum_dist = D * (1 + z) 
