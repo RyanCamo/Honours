@@ -38,9 +38,9 @@ mu_error = mu_diag+cov
 errorbar = error
 
 
+
 # List of models to loop through from ModelMerger file
-models = [FLCDM, wCDM]
-#[FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
+models = [FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
 
 # Milne Model for scaling figure
 milne = LCDM(zz,[0,0]) 
@@ -56,26 +56,32 @@ def get_bestfit(models, zz1, mu1, mu_error1):     # get_labels dont have margina
         for i, begin_param in enumerate(params_begin):
             proposal.append(abs(begin_param)*0.06)
             params_begin1.append(begin_param)
-        samples = emcee_run(zz1, mu1, mu_error1, params_begin1, nsamples, proposal, model)
+        samples, samples1, pdf = emcee_run(zz1, mu1, mu_error1, params_begin1, nsamples, proposal, model)
         params_all.append(get_param(samples, label, model.__name__))
 
 
 get_bestfit(models, zz, mu, mu_error)
+
+# Plot the data points
+offset1 = (np.sum(mu - (milne)))/len(zz)
+plt.errorbar(zz,mu-(offset1)-milne,yerr=errorbar,fmt='.',elinewidth=0.7,markersize=4, color='k' )
 
 if __name__ == "__main__":
     # Plot each model
     for i, (params, model) in enumerate(zip(params_all, models)):
         hubble = model(zz, params) 
         label, begin, legend = get_info(model.__name__, *params)
-        plt.plot(zz, hubble-milne-(hubble[0]-milne[0]), markersize=2, label = legend)
+        offset = (np.sum(hubble - (mu-offset1)))/len(zz)
+        plt.plot(zz, hubble-offset-milne, markersize=2, label = legend)
+        print(np.sum(hubble-offset-milne)/len(zz))
 
-    # Plot the data points
-    plt.errorbar(zz,mu-milne-(mu[0]-milne[0]),yerr=errorbar,fmt='.',elinewidth=0.7,markersize=4, color='k' )
+ 
 
 
     # Figure properties
-    plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-    plt.xlabel('Redshift, z')
-    plt.ylabel(r'$\Delta$ Distance Modulus (Mag)')
+    #plt.legend(loc='center left', bbox_to_anchor=(1, 0.5)) # - outside plot
+    plt.legend(loc='lower left', ncol=2, fontsize=12)
+    plt.xlabel('Redshift, z', fontsize=20)
+    plt.ylabel(r'$\Delta$ Distance Modulus (Mag)', fontsize=20)
     plt.savefig("hubble_diagram.png",bbox_inches='tight')
     plt.show()

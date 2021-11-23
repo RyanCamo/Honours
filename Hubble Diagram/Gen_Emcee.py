@@ -45,21 +45,19 @@ def L_tot(params, zz, mu, mu_err, model, begin):
 def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model):
     nwalkers = 100
     ndim = len(begin)
-    p0 = [np.array(begin) + 1e-4 * np.random.randn(ndim) for i in range(nwalkers)]
+    p0 = [np.array(begin) + 1e-5 * np.random.randn(ndim) for i in range(nwalkers)]
 
 
     sampler = emcee.EnsembleSampler(nwalkers, ndim, L_tot, args=(data_x, data_y, data_err, model,begin))
-    sampler.run_mcmc(p0, 200, progress=True)
-    samples = sampler.get_chain(discard=20, thin=7, flat=True)
-    samples1 = sampler.get_chain(discard=20, thin=7)
+    sampler.run_mcmc(p0, 250, progress=True)
+    samples = sampler.get_chain(discard=1, thin=7, flat=True)
+    samples1 = sampler.get_chain(discard=1, thin=7)
     pdf, blob = sampler.compute_log_prob(p0)
     return samples, samples1, pdf
 
 def get_param(samples, label, model):
     c = ChainConsumer()
-    burnin = 1
-    burntin = samples[burnin:]
-    c.add_chain(burntin, parameters=label, linewidth=2.0, name="MCMC").configure(summary=True,smooth=1)
+    c.add_chain(samples, parameters=label, linewidth=2.0, name="MCMC").configure(summary=True,smooth=1)
     #c.plotter.plot(figsize="COLUMN", chains="MCMC", filename='Model: %s' % model)
     #plt.close()
     params = []

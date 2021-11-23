@@ -299,7 +299,7 @@ def get_info(x, *params):
         label = [r"$\Omega_m$"]
         begin = [0.3]
         if len(params) > 0:
-            legend = r'$\Lambda$: $\Omega_m = %0.2f $' % (params[0])
+            legend = r'$F\Lambda$: $\Omega_m = %0.2f $' % (params[0])
         else:
             legend = 'No parameters provided'
         return label, begin, legend
