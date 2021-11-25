@@ -40,7 +40,8 @@ errorbar = error
 
 
 # List of models to loop through from ModelMerger file
-models = [FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
+models = [Fwa]
+#[FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
 
 # Milne Model for scaling figure
 milne = LCDM(zz,[0,0]) 

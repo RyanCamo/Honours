@@ -23,7 +23,7 @@ def get_bestfit(model, zz1, mu1, mu_error1):     # get_labels dont have marginal
 count = 50
 zz = np.logspace(-2,0.2,20)
 mu_error = np.linspace(0.01,0.01,20)
-models = [Chap, DGP, wCDM]
+models = [IDE1]
 #[FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
 meanmock = []
 milne = LCDM(zz,[0,0])

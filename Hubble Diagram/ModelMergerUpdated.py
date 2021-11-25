@@ -134,6 +134,7 @@ def wCDM(zs, parameters):
 def Fwa_Hz_inverse(z,om,w0,wa):
     ol = 1 - om 
     Hz = np.sqrt( (om*(1+z)**(3)) + (ol * ((1+z)**(3*(1+w0+wa))) * (np.exp(-3*wa*(1-((1+z)**(-1))))) ) )
+    #Hz = np.sqrt( (om*(1+z)**(3)) + (ol * ((1+z)**(-3*(1+w0+wa))) * (np.exp(3*wa*(1-((1+z)**(-1))))) ) )
     return 1.0 / Hz
 
 def Fwa(zs, parameters):
@@ -254,17 +255,17 @@ def DGP(zs, parameters):
 # Theres were kinda close
 #ol*((np.exp(-Q*ol/(1+z)))*((1+z)**(3*(1+w)))))
 #cdm*((np.exp(Q*ol/(1+z)))*((1+z)**(3)))
-# 14) IDE
-def IDE_Hz_inverse(z, cdm, ol, w, Q):
+# 14) IDE - doesnt work
+def IDE_Hz_inverse0(z, cdm, ol, w, Q):
     ok = 1.0 - cdm - ol
     Hz = np.sqrt(ok*(1+z)**(2) + ((((1+3*np.log((1/(1+z))))**(-1))*Q*cdm*((3*(1-w)+Q)**(-1))*(1+z)**(3*(1-w)+Q))) + (cdm*(1+z)**(3*(1-w)+Q)))
     #(((1/3)*Q*ol*(1+z)**(-3*(1+w)-Q)) + (cdm-(1/3)*Q)*(1+z)**3)) + ol*(1+z)**(-3*(1+w)-Q) - not so close
     return 1.0 / Hz
 
-def IDE(zs, parameters):
+def IDE0(zs, parameters):
     cdm, ol, w, Q = parameters
     ok = 1 -ol - cdm
-    x = np.array([quad(IDE_Hz_inverse, 0, z, args=(cdm, ol, w, Q))[0] for z in zs])
+    x = np.array([quad(IDE_Hz_inverse0, 0, z, args=(cdm, ol, w, Q))[0] for z in zs])
     if ok < 0.0:
         R0 = 1 / np.sqrt(-ok)
         D = R0 * np.sin(x / R0)
@@ -276,6 +277,29 @@ def IDE(zs, parameters):
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
     label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$Q$"]
+    return dist_mod
+
+# 15) IDE
+def IDE_Hz_inverse1(z, cdm, ol, w, e):
+    ok = 1.0 - cdm - ol
+    Hz = np.sqrt(cdm*(1+z)**3 + ol*(1-(e/(3*w + e)))*(1+z)**(-(3*(1+w)+e)) + ok*(1+z)**2) 
+    return 1.0 / Hz
+
+def IDE1(zs, parameters):
+    cdm, ol, w, e = parameters
+    ok = 1 -ol - cdm
+    x = np.array([quad(IDE_Hz_inverse1, 0, z, args=(cdm, ol, w, e))[0] for z in zs])
+    if ok < 0.0:
+        R0 = 1 / np.sqrt(-ok)
+        D = R0 * np.sin(x / R0)
+    elif ok > 0.0:
+        R0 = 1 / np.sqrt(ok)
+        D = R0 * np.sinh(x / R0)
+    else:
+        D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
     return dist_mod
 
 ### Other Functions ####
@@ -403,7 +427,7 @@ def get_info(x, *params):
             legend = 'No parameters provided'
         return label, begin, legend
 
-    if x == 'IDE':
+    if x == 'IDE0':
         label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$Q$"]
         begin = [0.3, 0.7, -1, -0.02]
         if len(params) > 0:
@@ -412,7 +436,14 @@ def get_info(x, *params):
             legend = 'No parameters provided'
         return label, begin, legend
 
-
+    if x == 'IDE1':
+        label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+        begin = [0.3, 0.7, -1, 0.02]
+        if len(params) > 0:
+            legend = r'IDE: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
+        else:
+            legend = 'No parameters provided'
+        return label, begin, legend
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from ModelMergerUpdated import *
 # This file creates mock data for each model and saves as a file 
 
 # List of models to loop through from ModelMergerUpdated file
-models = [FLCDM, LCDM, FwCDM, wCDM, Fwa, FCa, Chap, FGChap, GChap, DGP]
+models = [IDE1]
 
 # How many Mocks 
 count = 1000
