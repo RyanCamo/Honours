@@ -279,10 +279,10 @@ def IDE0(zs, parameters):
     label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$Q$"]
     return dist_mod
 
-# 15) IDE
+# 15) IDE1 Q = H e rho_x
 def IDE_Hz_inverse1(z, cdm, ol, w, e):
     ok = 1.0 - cdm - ol
-    Hz = np.sqrt(cdm*(1+z)**3 + ol*(1-(e/(3*w + e)))*(1+z)**(-(3*(1+w)+e)) + ok*(1+z)**2) 
+    Hz = np.sqrt(cdm*(1+z)**3 + ol*(1-(e/(3*w + e)))*(1+z)**((3*(1+w)+e)) + ok*(1+z)**2) 
     return 1.0 / Hz
 
 def IDE1(zs, parameters):
@@ -300,6 +300,100 @@ def IDE1(zs, parameters):
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
     label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+    return dist_mod
+
+# 16) IDE2 Q = H e rho_c
+def IDE_Hz_inverse2(z, cdm, ol, w, e):
+    ok = 1.0 - cdm - ol
+    Hz = np.sqrt(cdm*((1+z)**(3-e)) * (1-(e)/(3*w +e )) + ol*(1+z)**(3*(1+w)) + ok*(1+z)**2) 
+    return 1.0 / Hz
+
+def IDE2(zs, parameters):
+    cdm, ol, w, e = parameters
+    ok = 1 -ol - cdm
+    x = np.array([quad(IDE_Hz_inverse2, 0, z, args=(cdm, ol, w, e))[0] for z in zs])
+    if ok < 0.0:
+        R0 = 1 / np.sqrt(-ok)
+        D = R0 * np.sin(x / R0)
+    elif ok > 0.0:
+        R0 = 1 / np.sqrt(ok)
+        D = R0 * np.sinh(x / R0)
+    else:
+        D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+    return dist_mod
+
+# 18) IDE4 Q = H e [rho_c * rho_x / (rho_c + rho_x)]
+def IDE_Hz_inverse4(z, cdm, ol, w, e):
+    ok = 1.0 - cdm - ol
+    IDE4_const = ( ((1+z)**(-1*(e+(3*w)))) + (ol/cdm) )**(-e/(e+(3*w)))
+    Hz = np.sqrt( (cdm*IDE4_const*(1+z)**(3-e)) + IDE4_const*ol*(1+z)**(3*(1+w)) + ok*(1+z)**2) 
+    return 1.0 / Hz
+
+def IDE4(zs, parameters):
+    cdm, ol, w, e = parameters
+    ok = 1 -ol - cdm
+    x = np.array([quad(IDE_Hz_inverse4, 0, z, args=(cdm, ol, w, e))[0] for z in zs])
+    if ok < 0.0:
+        R0 = 1 / np.sqrt(-ok)
+        D = R0 * np.sin(x / R0)
+    elif ok > 0.0:
+        R0 = 1 / np.sqrt(ok)
+        D = R0 * np.sinh(x / R0)
+    else:
+        D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+    return dist_mod
+
+# 19) Flat w(z) with 3x parameters, \Omega_M, \omega_0 and \omega_a - DONE
+def Fwz_Hz_inverse(z,om,w0,wz):
+    ol = 1 - om 
+    Hz = np.sqrt( (om*(1+z)**(3)) + (ol * ((1+z)**(3*(1+w0-wz))) * (np.exp(3*wz*z)) ) )
+    return 1.0 / Hz
+
+def Fwz(zs, parameters):
+    om, w0, wz = parameters
+    x = np.array([quad(Fwa_Hz_inverse, 0, z, args=(om, w0, wz))[0] for z in zs])
+    D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = ["$\Omega_m$","$w_0$","$w_z$"]
+    return dist_mod
+
+# 20) LTBg - one 
+def LTBg_Hz_inverse(z,omo,omi,r0):
+    omr = omo + (omi-omo)*np.exp(-(z/r0)**2)
+    ok = 1-omr
+    Hz = (3/2)*((1)/(ok) - ((omr)/(np.sqrt(ok**3)))* np.sinh( np.sqrt((ok)/(omr)) ) )
+    return 1.0 / Hz
+
+def LTBg(zs, parameters):
+    omo, omi, r0 = parameters
+    x = np.array([quad(LTBg_Hz_inverse, 0, z, args=(omo, omi, r0))[0] for z in zs])
+    D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = ["$\Omega_{out}$","$\Omega_{in}$","$r_0$"]
+    return dist_mod
+
+# 21) FLAT GLT - Ginzburg-Landau Theory - https://arxiv.org/pdf/2201.04119.pdf
+def GLT_Hz_inverse(z,om,zt):
+    ol = 1-om
+    olz = ol* np.sqrt((zt-z)/(zt))
+    Hz = np.sqrt(om*(1+z)**3 + olz)
+    return 1.0 / Hz
+
+def GLT(zs, parameters):
+    om, zt = parameters
+    x = np.array([quad(GLT_Hz_inverse, 0, z, args=(om, zt))[0] for z in zs])
+    D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = ["$\Omega_{m}}$","$z_t$"]
     return dist_mod
 
 ### Other Functions ####
@@ -360,6 +454,15 @@ def get_info(x, *params):
         begin = [0.3, -1.1, 0.8]
         if len(params) > 0:
             legend = r'F$\omega$(a): $\Omega_m = %0.2f $, $\omega_0 = %0.2f $, $\omega_a = %0.2f $' % (params[0], params[1], params[2] )
+        else:
+            legend = 'No parameters provided'
+        return label, begin, legend
+
+    if x == 'Fwz':
+        label = [r"$\Omega_m$",r"$w_0$",r"$w_z$"]
+        begin = [0.3, -1.1, 1.25]
+        if len(params) > 0:
+            legend = r'F$\omega$(z): $\Omega_m = %0.2f $, $\omega_0 = %0.2f $, $\omega_z = %0.2f $' % (params[0], params[1], params[2] )
         else:
             legend = 'No parameters provided'
         return label, begin, legend
@@ -438,9 +541,45 @@ def get_info(x, *params):
 
     if x == 'IDE1':
         label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
-        begin = [0.3, 0.7, -1, 0.02]
+        begin = [0.25, 0.75, -1.1, 0.05]
         if len(params) > 0:
-            legend = r'IDE: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
+            legend = r'IDE 1: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
+        else:
+            legend = 'No parameters provided'
+        return label, begin, legend
+
+    if x == 'IDE2':
+        label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+        begin = [0.25, 0.75, -0.9, 0.03]
+        if len(params) > 0:
+            legend = r'IDE 2: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
+        else:
+            legend = 'No parameters provided'
+        return label, begin, legend
+
+    if x == 'IDE4':
+        label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+        begin = [0.25, 0.75, -0.9, 0.03]
+        if len(params) > 0:
+            legend = r'IDE 3: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
+        else:
+            legend = 'No parameters provided'
+        return label, begin, legend
+
+    if x == 'LTBg':
+        label = [r"$\Omega_{out}$", r"$\Omega_{in}$", r"$z_0$"]
+        begin = [0.35, 0.25, 0.1]
+        if len(params) > 0:
+            legend = r'LTBg: $\Omega_{out} = %0.2f $, $\Omega_{in} = %0.2f $, $z_0 = %0.2f $' % (params[0], params[1], params[2])
+        else:
+            legend = 'No parameters provided'
+        return label, begin, legend
+
+    if x == 'GLT':
+        label = [r"$\Omega_{m}}$",r"$z_t$"]
+        begin = [0.3, 3]
+        if len(params) > 0:
+            legend = r'GLT: $\Omega_{m} = %0.2f $, $z_t = %0.2f $' % (params[0], params[1])
         else:
             legend = 'No parameters provided'
         return label, begin, legend

@@ -33,7 +33,35 @@ def log_prior(parameters, begin):
             return -np.inf
         return 0
 
+def log_prior1(parameters, begin):
+    if abs(parameters[3]) > 0.5:
+        return -np.inf
+    if parameters[0] < 0:
+        return -np.inf
+    if parameters[1] < 0:
+        return -np.inf
+    else:
+        for i, (begins, parameter) in enumerate(zip(begin, parameters)): 
+            if abs(parameter) > 10*begins:
+                return -np.inf
+            return 0
+
 def L_tot(params, zz, mu, mu_err, model, begin): 
+    if model.__name__ == 'IDE1':
+        prior = log_prior1(params, begin)
+    else:
+        prior = log_prior(params, begin) 
+    like = cov_log_likelihood(params, zz, mu, mu_err, model)
+    if np.isnan(like+prior) == True:
+        return -np.inf
+
+    return like + prior
+
+def L_tot1(params, zz, mu, mu_err, model, begin):
+    if model.__name__ == 'IDE1':
+        prior = log_prior1(params, begin)   
+    else: 
+        prior = log_prior(params, begin)
     like = log_likelihood(params, zz, mu, mu_err, model)
     prior = log_prior(params, begin)
     if np.isnan(like+prior) == True:
@@ -42,24 +70,29 @@ def L_tot(params, zz, mu, mu_err, model, begin):
     return like + prior
 
 
-def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model):
+
+def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model, liketype):
     nwalkers = 100
     ndim = len(begin)
     p0 = [np.array(begin) + 1e-5 * np.random.randn(ndim) for i in range(nwalkers)]
+    if liketype == 'loglike':
+        liketypeuse = L_tot1
+    if liketype == 'covloglike':
+        liketypeuse = L_tot
 
-
-    sampler = emcee.EnsembleSampler(nwalkers, ndim, L_tot, args=(data_x, data_y, data_err, model,begin))
-    sampler.run_mcmc(p0, 250, progress=True)
-    samples = sampler.get_chain(discard=1, thin=7, flat=True)
-    samples1 = sampler.get_chain(discard=1, thin=7)
+    sampler = emcee.EnsembleSampler(nwalkers, ndim, liketypeuse, args=(data_x, data_y, data_err, model,begin))
+    sampler.run_mcmc(p0, 500, progress=True)
+    samples = sampler.get_chain(discard=0, flat=True)
+    samples1 = sampler.get_chain(discard=0)
     pdf, blob = sampler.compute_log_prob(p0)
     return samples, samples1, pdf
 
-def get_param(samples, label, model):
+def get_param(samples, label, model, plot):
     c = ChainConsumer()
-    c.add_chain(samples, parameters=label, linewidth=2.0, name="MCMC").configure(summary=True,smooth=1)
-    #c.plotter.plot(figsize="COLUMN", chains="MCMC", filename='Model: %s' % model)
-    #plt.close()
+    c.add_chain(samples, parameters=label, linewidth=2.0, name="MCMC", kde=1.5, color="red").configure(summary=True,shade_alpha=0.3)
+    if int(plot) == 1:
+        c.plotter.plot(figsize="COLUMN", chains="MCMC",filename='Model: %s' % model) 
+        plt.close()
     params = []
     for i, labelx in enumerate(label):
         params.append(c.analysis.get_summary(chains="MCMC")[labelx][1])
