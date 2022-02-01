@@ -1,1 +1,1 @@
-ax.axhline(0,color = 'k', ls = ':', linewidth=1)
+c.remove_chain('LCDM')
