@@ -13,15 +13,18 @@ FLCDM_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FLCDM_DES
 LCDM_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/LCDM_DES5YR_UNBIN.1.txt', usecols=(2,3), comments='#')
 FwCDM_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FwCDM_DES5YR_UNBIN.1.txt', usecols=(2,3), comments='#')
 wCDM_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/wCDM_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
-#Fwa_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/Fwa_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
-#Fwz_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/Fwz_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
-#IDE1_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/IDE1_DES5YR_UNBIN.1.txt', usecols=(2,3,4,5), comments='#')
-#IDE2_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/IDE2_DES5YR_UNBIN.1.txt', usecols=(2,3,4,5), comments='#')
-#IDE4_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/IDE4_DES5YR_UNBIN.1.txt', usecols=(2,3,4,5), comments='#')
+Fwa_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/Fwa_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
+Fwz_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/Fwz_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
+IDE1_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/IDE1_DES5YR_UNBIN.1.txt', usecols=(2,3,4,5), comments='#')
+IDE2_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/IDE2_DES5YR_UNBIN.1.txt', usecols=(2,3,4,5), comments='#')
+IDE4_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/IDE4_DES5YR_UNBIN.1.txt', usecols=(2,3,4,5), comments='#')
 FGChap_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FGChap_DES5YR_UNBIN.1.txt', usecols=(2,3), comments='#')
-#GChap_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/GChap_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
-#Chap_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/Chap_DES5YR_UNBIN.1.txt', usecols=(2,3), comments='#')
-#FCa_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FCa_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
+GChap_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/GChap_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
+Chap_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/Chap_DES5YR_UNBIN.1.txt', usecols=(2,3), comments='#')
+FCa_COBAYA_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FCa_DES5YR_UNBIN.1.txt', usecols=(2,3,4), comments='#')
+FwCDM_BAO_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FwCDM_BAO_CMB.1.txt', usecols=(2,3), comments='#')
+FwCDM_FULL_CHAIN = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FwCDM_BAO_CMB_SN.1.txt', usecols=(2,3), comments='#')
+FwCDM_BAO_CHAIN2 = np.loadtxt('/Users/RyanCamo/Desktop/Cobaya/chains/FwCDM_BAO_CMB_NEW.1.txt', usecols=(2,3), comments='#')
 
 # Get Info For Each Model
 
@@ -38,6 +41,12 @@ label_Fwa, begin_Fwa, legend_Fwa = get_info(Fwa.__name__)
 label_Fwz, begin_Fwz, legend_Fwz = get_info(Fwz.__name__)
 label_GChap, begin_GChap, legend_GChap = get_info(GChap.__name__)
 label_Chap, begin_Chap, legend_Chap = get_info(Chap.__name__)
+
+#c.add_chain(FwCDM_COBAYA_CHAIN[200:], parameters=label_FwCDM, linewidth=2.0, name="FwCDM", kde=1.5, color="red",num_free_params=len(begin_FwCDM)).configure(summary=True, shade_alpha=0.2,statistics="max")
+#c.add_chain(LCDM_COBAYA_CHAIN, parameters=label_LCDM, linewidth=2.0, name="LCDM", kde=1.5, color="blue",num_free_params=2).configure(summary=True, shade_alpha=0.2,statistics="max")
+#c.plotter.plot(figsize="COLUMN", chains=["LCDM", "FwCDM"])  
+#plt.show()
+#exit()
 
 #### PLOTS FOR DIFFERENT MODELS - NOTE PARAMS ARE SAVED AS: MODEL_PARAM - BESIDES FLCDM/LCDM
 
@@ -72,8 +81,11 @@ plt.close()
 c.remove_chain('LCDM')
 
 ### FwCDM PLOT
-name = FwCDM.__name__
+name = FwCDM.__name__ 
+c.add_chain(FwCDM_BAO_CHAIN[100:], parameters=label_FwCDM, linewidth=2.0, name="FwCDM_BAO", kde=1.5, color="yellow",num_free_params=len(begin_FwCDM)).configure(summary=True, shade_alpha=0.2,statistics="max")
 c.add_chain(FwCDM_COBAYA_CHAIN[200:], parameters=label_FwCDM, linewidth=2.0, name=name, kde=1.5, color="blue",num_free_params=len(begin_FwCDM)).configure(summary=True, shade_alpha=0.2,statistics="max")
+c.add_chain(FwCDM_FULL_CHAIN, parameters=label_FwCDM, linewidth=2.0, name="FwCDM_Full", kde=1.5, color="red",num_free_params=len(begin_FwCDM)).configure(summary=True, shade_alpha=0.2,statistics="max")
+c.add_chain(FwCDM_BAO_CHAIN2[100:], parameters=label_FwCDM, linewidth=2.0, name="FwCDM_BAO_NEW", kde=1.5, color="green",num_free_params=len(begin_FwCDM)).configure(summary=True, shade_alpha=0.2,statistics="max")
 
 # Gets best fit and plus/minus error
 FwCDM_om = c.analysis.get_summary(chains=name)[r'$\Omega_m$'][1]
@@ -91,21 +103,23 @@ ax.scatter(fom, -1, marker = 'D', s = 50, c='black', label = r'Flat $\Lambda$')
 c.plotter.plot_contour(ax, *label_FwCDM) 
 
 # Unique to FwCDM model
-ax.text(0.22,-1.63,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(FwCDM_om,FwCDM_omp,FwCDM_omm), family='serif',color='black',rotation=0,fontsize=12,ha='left') 
-ax.text(0.22,-1.63-0.09,'$\omega = %10.5s^{%10.5s}_{%10.5s}$' %(FwCDM_w,FwCDM_wp,FwCDM_wm), family='serif',color='black',rotation=0,fontsize=12,ha='left')
+#ax.text(0.22,-1.63,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(FwCDM_om,FwCDM_omp,FwCDM_omm), family='serif',color='black',rotation=0,fontsize=12,ha='left') 
+#ax.text(0.22,-1.63-0.09,'$\omega = %10.5s^{%10.5s}_{%10.5s}$' %(FwCDM_w,FwCDM_wp,FwCDM_wm), family='serif',color='black',rotation=0,fontsize=12,ha='left')
 ax.set_xlabel(r'$\Omega_m$', fontsize = 18)
 ax.set_ylabel(r'$\omega$', fontsize = 18)
 
 # Plot limits
-#ax.set_xlim(0.20,0.5)
-#ax.set_ylim(0.48,1.06)
+ax.set_xlim(0.1,0.5)
+ax.set_ylim(-2,0)
 
 plt.minorticks_on()
 ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
 ax.legend(loc='upper right',frameon=False,fontsize=12)
-#plt.show()
-plt.close()
+plt.show()
+#plt.close()
 c.remove_chain('FwCDM')
+exit()
+
 
 
 ### wCDM PLOT
@@ -165,23 +179,120 @@ fig, ax = plt.subplots(1, 1)
 ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
 ok = 1- (om+ol)
 ax.scatter(1-fom, 0, marker = 'D', s = 50, c='black', label = r'Flat $\Lambda$', zorder = 2)
-ax.scatter(1-(om/(1-ok)), 0, marker = 'X', s = 60, c='red', label = r'$\Lambda$', zorder = 3)
 c.plotter.plot_contour(ax,r'$A$', r'$\alpha$')
-ax.text(0.85,-0.3,r'$A = %10.5s^{%10.5s}_{%10.5s}$' %(FGChap_A,FGChap_Ap,FGChap_Am), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
-ax.text(0.85,-0.3-0.2,r'$\alpha = %10.5s^{%10.5s}_{%10.5s}$' %(FGChap_a,FGChap_ap,FGChap_am), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(0.91,-0.59,r'$A = %10.5s^{%10.5s}_{%10.5s}$' %(FGChap_A,FGChap_Ap,FGChap_Am), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(0.91,-0.59-0.3,r'$\alpha = %10.5s^{%10.5s}_{%10.5s}$' %(FGChap_a,FGChap_ap,FGChap_am), family='serif',color='black',rotation=0,fontsize=12,ha='right')
 #ax.text(0.86,-0.5-0.4,r'$X=\Lambda CDM$ Best Fit', family='serif',color='black',rotation=0,fontsize=12,ha='right')
 ax.set_xlabel(r'$A$', fontsize = 18)
-ax.set_ylabel(r'$\alpha$', fontsize = 18) 
-#ax.set_ylim(-1,2)
+#ax.tick_params(axis='x', labelsize=12)
+#ax.set_ylabel(r'$\alpha$', fontsize = 18) 
+ax.set_xlim(0.5,0.92)
+ax.set_ylim(-1,2)
+#ax.set_xticklabels(['','0.55','','0.65','','0.75','','0.85',''])
+#ax.set_yticklabels(['','','','','','',''])
+plt.minorticks_on()
+ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
+ax.legend(loc='upper left',frameon=False,fontsize=16)
+#plt.show()
+plt.close()
+c.remove_chain('FGChap')
+#c.plotter.plot(figsize="COLUMN", chains=['FGChap'],filename='FGChap_TEST' )  
+#c.plotter.plot(figsize="COLUMN", chains=['LCDM'],filename='LCDM_TEST' )  
+#print(c.comparison.comparison_table(caption="Model comparisons!"))
+
+
+
+### CHAP PLOT 
+c.add_chain(Chap_COBAYA_CHAIN[500:], parameters=[r'$A$', r'$\Omega_{K}$'], linewidth=2.0, name="Chap", kde=1.5, color="blue",num_free_params=2, num_eff_data_points=20).configure(summary=True, shade_alpha=0.2,statistics="max")
+Chap_A = c.analysis.get_summary(chains="Chap")[r'$A$'][1]
+Chap_Ap = c.analysis.get_summary(chains="Chap")[r'$A$'][2]-c.analysis.get_summary(chains="Chap")[r'$A$'][1]
+Chap_Am = c.analysis.get_summary(chains="Chap")[r'$A$'][1]-c.analysis.get_summary(chains="Chap")[r'$A$'][0]
+Chap_ok = c.analysis.get_summary(chains="Chap")[r'$\Omega_{K}$'][1]
+Chap_okp =c.analysis.get_summary(chains="Chap")[r'$\Omega_{K}$'][2]-c.analysis.get_summary(chains="Chap")[r'$\Omega_{K}$'][1]
+Chap_okm =c.analysis.get_summary(chains="Chap")[r'$\Omega_{K}$'][1]-c.analysis.get_summary(chains="Chap")[r'$\Omega_{K}$'][0]
+
+fig, ax = plt.subplots(1, 1)
+
+#ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+c.plotter.plot_contour(ax, r'$\Omega_{K}$',r'$A$')
+ax.text(0.78,0.3,r'$A = %10.5s^{%10.5s}_{%10.5s}$' %(Chap_A,Chap_Ap,Chap_Am), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(0.78,0.3-0.08,r'$\Omega_{K} = %10.5s^{%10.5s}_{%10.5s}$' %(Chap_ok,Chap_okp,Chap_okm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.set_ylabel(r'$A$', fontsize = 18)
+ax.set_xlabel(r'$\Omega_{K}$', fontsize = 18) 
+ax.set_ylim(0.15,1.025)
+ax.set_xlim(-0.85,0.85)
+plt.minorticks_on()
+ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
+ax.legend(loc='upper left',frameon=False,fontsize=12)
+#plt.show()
+plt.close()
+c.remove_chain('Chap')
+
+
+### GCHAP PLOT 
+c.add_chain(GChap_COBAYA_CHAIN[800:], parameters=[r"$A$",r"$\alpha$",r"$\Omega_{K}$"], linewidth=2.0, name="GChap", kde=1.5, color="blue",num_free_params=2).configure(summary=True, shade_alpha=0.2,statistics="max")
+GChap_A = c.analysis.get_summary(chains="GChap")[r'$A$'][1]
+GChap_Ap = c.analysis.get_summary(chains="GChap")[r'$A$'][2]-c.analysis.get_summary(chains="GChap")[r'$A$'][1]
+GChap_Am = c.analysis.get_summary(chains="GChap")[r'$A$'][1]-c.analysis.get_summary(chains="GChap")[r'$A$'][0]
+GChap_ok = c.analysis.get_summary(chains="GChap")[r'$\Omega_{K}$'][1]
+GChap_okp =c.analysis.get_summary(chains="GChap")[r'$\Omega_{K}$'][2]-c.analysis.get_summary(chains="GChap")[r'$\Omega_{K}$'][1]
+GChap_okm =c.analysis.get_summary(chains="GChap")[r'$\Omega_{K}$'][1]-c.analysis.get_summary(chains="GChap")[r'$\Omega_{K}$'][0]
+GChap_a = c.analysis.get_summary(chains="GChap")[r"$\alpha$"][1]
+GChap_ap =c.analysis.get_summary(chains="GChap")[r"$\alpha$"][2]-c.analysis.get_summary(chains="GChap")[r"$\alpha$"][1]
+GChap_am =c.analysis.get_summary(chains="GChap")[r"$\alpha$"][1]-c.analysis.get_summary(chains="GChap")[r"$\alpha$"][0]
+
+fig, ax = plt.subplots(1, 1)
+ax.scatter(1-(om/(1-ok)), 0, marker = 'X', s = 60, c='red', label = r'$\Lambda$', zorder = 3)
+ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+c.plotter.plot_contour(ax, r'$A$',r"$\alpha$")
+ax.text(0.91,-0.59 +0.3,r'$A = %10.5s^{%10.5s}_{%10.5s}$' %(GChap_A,GChap_Ap,GChap_Am), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(0.91,-0.59,r'$\alpha = %10.5s^{%10.5s}_{%10.5s}$' %(GChap_a,GChap_ap,GChap_am), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(0.91,-0.59-0.3,r'$\Omega_{K} = %10.5s^{%10.5s}_{%10.5s}$' %(GChap_ok,GChap_okp,GChap_okm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.set_xlabel(r'$A$', fontsize = 18)
+ax.set_ylabel(r"$\alpha$", fontsize = 18) 
+ax.set_ylim(-1,2.0)
+ax.set_xlim(0.5,0.92)
 plt.minorticks_on()
 ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
 ax.legend(loc='upper left',frameon=False,fontsize=12)
 plt.show()
 #plt.close()
-c.remove_chain('FGChap')
-#c.plotter.plot(figsize="COLUMN", chains=['FGChap'],filename='FGChap_TEST' )  
-#c.plotter.plot(figsize="COLUMN", chains=['LCDM'],filename='LCDM_TEST' )  
-#print(c.comparison.comparison_table(caption="Model comparisons!"))
+c.remove_chain('GChap')
+exit()
+
+
+
+### FCa PLOT 
+c.add_chain(FCa_COBAYA_CHAIN[500:], parameters=[r"$\Omega_m$",r"$q$",r"$n$"], linewidth=2.0, name="FCa", kde=1.5, color="blue",num_free_params=3).configure(summary=True, shade_alpha=0.2,statistics="mean")
+FCa_om = c.analysis.get_summary(chains="FCa")[r"$\Omega_m$"][1]
+FCa_omp = c.analysis.get_summary(chains="FCa")[r"$\Omega_m$"][2]-c.analysis.get_summary(chains="FCa")[r"$\Omega_m$"][1]
+FCa_omm = c.analysis.get_summary(chains="FCa")[r"$\Omega_m$"][1]-c.analysis.get_summary(chains="FCa")[r"$\Omega_m$"][0]
+FCa_q = c.analysis.get_summary(chains="FCa")[r"$q$"][1]
+FCa_qp =c.analysis.get_summary(chains="FCa")[r"$q$"][2]-c.analysis.get_summary(chains="FCa")[r"$q$"][1]
+FCa_qm =c.analysis.get_summary(chains="FCa")[r"$q$"][1]-c.analysis.get_summary(chains="FCa")[r"$q$"][0]
+FCa_n = c.analysis.get_summary(chains="FCa")[r"$n$"][1]
+FCa_np =c.analysis.get_summary(chains="FCa")[r"$n$"][2]-c.analysis.get_summary(chains="FCa")[r"$n$"][1]
+FCa_nm =c.analysis.get_summary(chains="FCa")[r"$n$"][1]-c.analysis.get_summary(chains="FCa")[r"$n$"][0]
+
+
+fig, ax = plt.subplots(1, 1)
+ax.scatter(1, 0, marker = 'x', s = 70, c='black', zorder = 3)
+ax.axvline(1,color = 'k', ls = ':', linewidth=1, zorder = 1)
+#c.plotter.plot_contour(ax, r"$q$",r"$\Omega_m$") ##########
+c.plotter.plot_contour(ax, r"$q$",r"$n$")
+ax.text(2.9,-2.23,r'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(FCa_om,FCa_omp,FCa_omm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(2.9,-2.23-0.3,r'$q = %10.5s^{%10.5s}_{%10.5s}$' %(FCa_q,FCa_qp,FCa_qm), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(2.9,-2.23-0.6,r'$n = %10.5s^{%10.5s}_{%10.5s}$' %(FCa_n,FCa_np,FCa_nm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.set_xlabel(r'$q$', fontsize = 18)
+ax.set_ylabel(r"$n$", fontsize = 18) 
+ax.set_ylim(-3,0.5)
+ax.set_xlim(0.1,3)
+plt.minorticks_on()
+ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
+ax.legend(loc='upper left',frameon=False,fontsize=12)
+plt.show()
+#plt.close()
+c.remove_chain('FCa')
 exit()
 
 
@@ -208,6 +319,8 @@ fig, ax = plt.subplots(1, 1)
 c.plotter.plot_contour(ax, '$w_0$', '$w_a$') 
 
 # Unique to model
+ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+ax.scatter(-1, 0, marker = 'x', s = 70, c='black', zorder = 3)
 ax.text(-1.85,-7,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(Fwa_om,Fwa_omp,Fwa_omm), family='serif',color='black',rotation=0,fontsize=12,ha='left') 
 ax.text(-1.85,-7-1,'$\omega_0 = %10.5s^{%10.5s}_{%10.5s}$' %(Fwa_o0,Fwa_o0p,Fwa_o0m), family='serif',color='black',rotation=0,fontsize=12,ha='left')
 ax.text(-1.85,-7-2,'$\omega_{a} = %10.5s^{%10.5s}_{%10.5s}$' %(Fwa_oa,Fwa_oap,Fwa_oam), family='serif',color='black',rotation=0,fontsize=12,ha='left')
@@ -215,7 +328,7 @@ ax.set_xlabel(r'$\omega_0$', fontsize = 18)
 ax.set_ylabel(r'$\omega_a$', fontsize = 18)
 
 # Plot limits
-#ax.set_xlim(-2,0)
+ax.set_xlim(-1.95,-0.35)
 #ax.set_ylim(-3,2)
 #ax.set_xticklabels(['','',-1.5,'',-1.0,'',-0.5,'',''])
 
@@ -223,7 +336,7 @@ plt.minorticks_on()
 ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
 ax.legend(loc='upper right',frameon=False,fontsize=12)
 #plt.show()
-#plt.close()
+plt.close()
 c.remove_chain('Fwa')
 
 ### Fwz PLOT
@@ -249,6 +362,8 @@ fig, ax = plt.subplots(1, 1)
 c.plotter.plot_contour(ax,'$w_0$', '$w_z$') 
 
 # Unique to model
+ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+ax.scatter(-1, 0, marker = 'x', s = 70, c='black', zorder = 3)
 ax.text(-1.85,-7,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(Fwz_om,Fwz_omp,Fwz_omm), family='serif',color='black',rotation=0,fontsize=12,ha='left') 
 ax.text(-1.85,-7-1,'$\omega_0 = %10.5s^{%10.5s}_{%10.5s}$' %(Fwz_o0,Fwz_o0p,Fwz_o0m), family='serif',color='black',rotation=0,fontsize=12,ha='left')
 ax.text(-1.85,-7-2,'$\omega_{z} = %10.5s^{%10.5s}_{%10.5s}$' %(Fwz_oz,Fwz_ozp,Fwz_ozm), family='serif',color='black',rotation=0,fontsize=12,ha='left')
@@ -256,8 +371,103 @@ ax.set_xlabel(r'$\omega_0$', fontsize = 18)
 ax.set_ylabel(r'$\omega_z$', fontsize = 18)
 
 # Plot limits
-#ax.set_xlim(-2,0)
+ax.set_xlim(-1.925,-0.4525)
 #ax.set_ylim(-3,2)
+#ax.set_xticklabels(['','',-1.5,'',-1.0,'',-0.5,'',''])
+
+plt.minorticks_on()
+ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
+ax.legend(loc='upper right',frameon=False,fontsize=12)
+#plt.show()
+plt.close()
+c.remove_chain('Fwz')
+
+### IDE1 PLOT
+name = IDE1.__name__
+
+# The actual chain this code is about
+c.add_chain(IDE1_COBAYA_CHAIN[1000:], parameters=label_IDE1, linewidth=2.0, name=name, kde=1.5, color="blue",num_free_params=len(begin_IDE1)).configure(summary=True, shade_alpha=0.2,statistics="max")
+
+# Gets best fit and plus/minus error 
+IDE1_om = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]
+IDE1_omp = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][2]-c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]
+IDE1_omm = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]-c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][0]
+IDE1_ol = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]
+IDE1_olp = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][2]-c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]
+IDE1_olm = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]-c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][0]
+IDE1_w = c.analysis.get_summary(chains=name)[r"$\omega$"][1]
+IDE1_wp =c.analysis.get_summary(chains=name)[r"$\omega$"][2]-c.analysis.get_summary(chains=name)[r"$\omega$"][1]
+IDE1_wm =c.analysis.get_summary(chains=name)[r"$\omega$"][1]-c.analysis.get_summary(chains=name)[r"$\omega$"][0]
+IDE1_e = c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]
+IDE1_ep =c.analysis.get_summary(chains=name)[r"$\varepsilon$"][2]-c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]
+IDE1_em =c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]-c.analysis.get_summary(chains=name)[r"$\varepsilon$"][0]
+
+fig, ax = plt.subplots(1, 1)
+
+# Selectings which params to plot and on what axis
+c.plotter.plot_contour(ax,r"$\omega$", r"$\varepsilon$") 
+
+# Unique to model
+ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+ax.scatter(-1, 0, marker = 'x', s = 70, c='black', zorder = 3)
+ax.text(0,-0.225,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(IDE1_om,IDE1_omp,IDE1_omm), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(0,-0.225-0.075,r'$\Omega_x = %10.5s^{%10.5s}_{%10.5s}$' %(IDE1_ol,IDE1_olp,IDE1_olm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(0,-0.225-0.15,r'$\omega = %10.5s^{%10.5s}_{%10.5s}$' %(IDE1_w,IDE1_wp,IDE1_wm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(0,-0.225-0.225,r'$\varepsilon = %10.5s^{%10.5s}_{%10.5s}$' %(IDE1_e,IDE1_ep,IDE1_em), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.set_xlabel(r"$\omega$", fontsize = 18)
+ax.set_ylabel(r"$\varepsilon$", fontsize = 18)
+
+# Plot limits
+ax.set_xlim(-2.0,0.05)
+ax.set_ylim(-0.5,0.5)
+#ax.set_xticklabels(['','',-1.5,'',-1.0,'',-0.5,'',''])
+
+plt.minorticks_on()
+ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
+ax.legend(loc='upper right',frameon=False,fontsize=12)
+#plt.show()
+plt.close()
+c.remove_chain('IDE1')
+
+
+### IDE2 PLOT
+name = IDE2.__name__
+
+# The actual chain this code is about
+c.add_chain(IDE2_COBAYA_CHAIN[2000:], parameters=label_IDE2, linewidth=2.0, name=name, kde=1.5, color="blue",num_free_params=len(begin_IDE1)).configure(summary=True, shade_alpha=0.2,statistics="max")
+
+# Gets best fit and plus/minus error 
+IDE2_om = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]
+IDE2_omp = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][2]-c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]
+IDE2_omm = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]-c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][0]
+IDE2_ol = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]
+IDE2_olp = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][2]-c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]
+IDE2_olm = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]-c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][0]
+IDE2_w = c.analysis.get_summary(chains=name)[r"$\omega$"][1]
+IDE2_wp =c.analysis.get_summary(chains=name)[r"$\omega$"][2]-c.analysis.get_summary(chains=name)[r"$\omega$"][1]
+IDE2_wm =c.analysis.get_summary(chains=name)[r"$\omega$"][1]-c.analysis.get_summary(chains=name)[r"$\omega$"][0]
+IDE2_e = c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]
+IDE2_ep =c.analysis.get_summary(chains=name)[r"$\varepsilon$"][2]-c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]
+IDE2_em =c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]-c.analysis.get_summary(chains=name)[r"$\varepsilon$"][0]
+
+fig, ax = plt.subplots(1, 1)
+
+# Selectings which params to plot and on what axis
+c.plotter.plot_contour(ax,r"$\omega$", r"$\varepsilon$") 
+
+# Unique to model
+ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+ax.scatter(-1, 0, marker = 'x', s = 70, c='black', zorder = 3)
+ax.text(1.9,-0.225,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(IDE2_om,IDE2_omp,IDE2_omm), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(1.9,-0.225-0.075,r'$\Omega_x = %10.5s^{%10.5s}_{%10.5s}$' %(IDE2_ol,IDE2_olp,IDE2_olm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(1.9,-0.225-0.15,r'$\omega = %10.5s^{%10.5s}_{%10.5s}$' %(IDE2_w,IDE2_wp,IDE2_wm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(1.9,-0.225-0.225,r'$\varepsilon = %10.5s^{%10.5s}_{%10.5s}$' %(IDE2_e,IDE2_ep,IDE2_em), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.set_xlabel(r"$\omega$", fontsize = 18)
+ax.set_ylabel(r"$\varepsilon$", fontsize = 18)
+
+# Plot limits
+ax.set_xlim(-5.0,2)
+ax.set_ylim(-0.5,0.5)
 #ax.set_xticklabels(['','',-1.5,'',-1.0,'',-0.5,'',''])
 
 plt.minorticks_on()
@@ -265,8 +475,52 @@ ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, dir
 ax.legend(loc='upper right',frameon=False,fontsize=12)
 plt.show()
 #plt.close()
-c.remove_chain('Fwz')
-
-### IDE1 PLOT
+c.remove_chain('IDE2')
 
 
+### IDE4 PLOT
+name = IDE4.__name__
+
+# The actual chain this code is about
+c.add_chain(IDE4_COBAYA_CHAIN[500:], parameters=label_IDE4, linewidth=2.0, name=name, kde=1.5, color="blue",num_free_params=len(begin_IDE1)).configure(summary=True, shade_alpha=0.2,statistics="max")
+
+# Gets best fit and plus/minus error 
+IDE4_om = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]
+IDE4_omp = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][2]-c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]
+IDE4_omm = c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][1]-c.analysis.get_summary(chains=name)[r"$\Omega_{m}$"][0]
+IDE4_ol = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]
+IDE4_olp = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][2]-c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]
+IDE4_olm = c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][1]-c.analysis.get_summary(chains=name)[r"$\Omega_{x}$"][0]
+IDE4_w = c.analysis.get_summary(chains=name)[r"$\omega$"][1]
+IDE4_wp =c.analysis.get_summary(chains=name)[r"$\omega$"][2]-c.analysis.get_summary(chains=name)[r"$\omega$"][1]
+IDE4_wm =c.analysis.get_summary(chains=name)[r"$\omega$"][1]-c.analysis.get_summary(chains=name)[r"$\omega$"][0]
+IDE4_e = c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]
+IDE4_ep =c.analysis.get_summary(chains=name)[r"$\varepsilon$"][2]-c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]
+IDE4_em =c.analysis.get_summary(chains=name)[r"$\varepsilon$"][1]-c.analysis.get_summary(chains=name)[r"$\varepsilon$"][0]
+
+fig, ax = plt.subplots(1, 1)
+
+# Selectings which params to plot and on what axis
+c.plotter.plot_contour(ax,r"$\omega$", r"$\varepsilon$") 
+
+# Unique to model
+ax.axhline(0,color = 'k', ls = ':', linewidth=1, zorder = 1)
+ax.scatter(-1, 0, marker = 'x', s = 70, c='black', zorder = 3)
+ax.text(1.9,-0.225,'$\Omega_m = %10.5s^{%10.5s}_{%10.5s}$' %(IDE4_om,IDE4_omp,IDE4_omm), family='serif',color='black',rotation=0,fontsize=12,ha='right') 
+ax.text(1.9,-0.225-0.075,r'$\Omega_x = %10.5s^{%10.5s}_{%10.5s}$' %(IDE4_ol,IDE4_olp,IDE4_olm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(1.9,-0.225-0.15,r'$\omega = %10.5s^{%10.5s}_{%10.5s}$' %(IDE4_w,IDE4_wp,IDE4_wm), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.text(1.9,-0.225-0.225,r'$\varepsilon = %10.5s^{%10.5s}_{%10.5s}$' %(IDE4_e,IDE4_ep,IDE4_em), family='serif',color='black',rotation=0,fontsize=12,ha='right')
+ax.set_xlabel(r"$\omega$", fontsize = 18)
+ax.set_ylabel(r"$\varepsilon$", fontsize = 18)
+
+# Plot limits
+ax.set_xlim(-5.0,2)
+ax.set_ylim(-0.5,0.5)
+#ax.set_xticklabels(['','',-1.5,'',-1.0,'',-0.5,'',''])
+
+plt.minorticks_on()
+ax.tick_params(which = 'both', bottom=True, top=True, left=True, right=True, direction="in")
+ax.legend(loc='upper right',frameon=False,fontsize=12)
+plt.show()
+#plt.close()
+c.remove_chain('IDE4')

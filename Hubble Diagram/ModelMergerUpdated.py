@@ -209,7 +209,7 @@ def GChap_Hz_inverse(z, ok, A ,a):
     return 1.0 / Hz
 
 def GChap(zs, parameters):
-    ok, A, a = parameters
+    A, a, ok = parameters
     x = np.array([quad(GChap_Hz_inverse, 0, z, args=(ok, A, a))[0] for z in zs])
     if ok < 0.0:
         R0 = 1 / np.sqrt(-ok)
@@ -221,7 +221,7 @@ def GChap(zs, parameters):
         D = x
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
-    label = ["$\Omega_K$","$A$",r"$\alpha$"]
+    label = ["$A$",r"$\alpha$","$\Omega_K$",]
     return dist_mod
 
 
@@ -299,7 +299,7 @@ def IDE1(zs, parameters):
         D = x
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
-    label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+    label = [r"$\Omega_{m}$", r"$\Omega_{x}$", r"$\omega$", r"$\varepsilon$"]
     return dist_mod
 
 # 16) IDE2 Q = H e rho_c
@@ -322,7 +322,7 @@ def IDE2(zs, parameters):
         D = x
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
-    label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+    label = [r"$\Omega_{m}$", r"$\Omega_{x}$", r"$\omega$", r"$\varepsilon$"]
     return dist_mod
 
 # 18) IDE4 Q = H e [rho_c * rho_x / (rho_c + rho_x)]
@@ -346,7 +346,7 @@ def IDE4(zs, parameters):
         D = x
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
-    label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+    label = [r"$\Omega_{m}$", r"$\Omega_{x}$", r"$\omega$", r"$\varepsilon$"]
     return dist_mod
 
 # 19) Flat w(z) with 3x parameters, \Omega_M, \omega_0 and \omega_a - DONE
@@ -394,6 +394,20 @@ def GLT(zs, parameters):
     lum_dist = D * (1 + zs)
     dist_mod = 5 * np.log10(lum_dist)
     label = ["$\Omega_{m}}$","$z_t$"]
+    return dist_mod
+
+# 22) New General Chaplygin 4x parameters, \Omega_K, A and \alpha, w
+def NGCG_Hz_inverse(z, om, A ,a, w):
+    Hz = np.sqrt(om*(1+z)**3 + ((1-om)*(1+z)**3)*(1-A*(1-(1+z)**(3*w*(1+a))))**(1/(1+a)))
+    return 1.0 / Hz
+
+def NGCG(zs, parameters):
+    om, A, a, w = parameters
+    x = np.array([quad(NGCG_Hz_inverse, 0, z, args=(om, A, a, w))[0] for z in zs])
+    D = x
+    lum_dist = D * (1 + zs)
+    dist_mod = 5 * np.log10(lum_dist)
+    label = ["\Omega_m", "$A$",r"$\alpha$","$\Omega_K$",]
     return dist_mod
 
 ### Other Functions ####
@@ -504,8 +518,8 @@ def get_info(x, *params):
         return label, begin, legend
 
     if x == 'GChap':
-        label = [r"$\Omega_K$",r"$A$",r"$\alpha$"]
-        begin = [0.01, 0.7, 0.03]
+        label = [r"$A$",r"$\alpha$",r"$\Omega_K$"]
+        begin = [0.7, 0.3,0.01]
         if len(params) > 0:
             legend = r'GCh: $A = %0.2f $ $\alpha = %0.2f $ $\Omega_K = %0.2f $' % (params[0], params[1], params[2])
         else:
@@ -540,7 +554,7 @@ def get_info(x, *params):
         return label, begin, legend
 
     if x == 'IDE1':
-        label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+        label = [r"$\Omega_{m}$", r"$\Omega_{x}$", r"$\omega$", r"$\varepsilon$"]
         begin = [0.25, 0.75, -1.1, 0.05]
         if len(params) > 0:
             legend = r'IDE 1: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
@@ -549,7 +563,7 @@ def get_info(x, *params):
         return label, begin, legend
 
     if x == 'IDE2':
-        label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+        label = [r"$\Omega_{m}$", r"$\Omega_{x}$", r"$\omega$", r"$\varepsilon$"]
         begin = [0.25, 0.75, -0.9, 0.03]
         if len(params) > 0:
             legend = r'IDE 2: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])
@@ -558,7 +572,7 @@ def get_info(x, *params):
         return label, begin, legend
 
     if x == 'IDE4':
-        label = [r"$\Omega_{CDM}$", r"$\Omega_{DE}$", r"$\omega$", r"$\epsilon$"]
+        label = [r"$\Omega_{m}$", r"$\Omega_{x}$", r"$\omega$", r"$\varepsilon$"]
         begin = [0.25, 0.75, -0.9, 0.03]
         if len(params) > 0:
             legend = r'IDE 3: $\Omega_{CDM} = %0.2f $, $\Omega_{DE} = %0.2f $, $\omega = %0.2f $, $\epsilon = %0.2f $' % (params[0], params[1], params[2], params[3])

@@ -89,7 +89,7 @@ def emcee_run(data_x, data_y, data_err, begin, nsamples, proposal_width, model, 
 
 def get_param(samples, label, model, plot):
     c = ChainConsumer()
-    c.add_chain(samples, parameters=label, linewidth=2.0, name="MCMC", kde=1.5, color="red").configure(summary=True,shade_alpha=0.3)
+    c.add_chain(samples, parameters=label, linewidth=2.0, name="MCMC", kde=1.5, color="red").configure(summary=True,shade_alpha=0.3,statistics="max")
     if int(plot) == 1:
         c.plotter.plot(figsize="COLUMN", chains="MCMC",filename='Model: %s' % model) 
         plt.close()

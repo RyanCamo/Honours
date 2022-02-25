@@ -1,1 +1,1 @@
-c.remove_chain('LCDM')
+if __name__ == "__main__":
